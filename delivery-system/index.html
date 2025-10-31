@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Delivery</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-utensils"></i> FoodDelivery System</h1>
+            <p>Sistema de gerenciamento de pedidos de comida</p>
+        </header>
+
+        <div class="dashboard">
+            <!-- Cards de Estatísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-usuarios">0</h3>
+                        <p>Total de Usuários</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-pedidos">0</h3>
+                        <p>Pedidos Realizados</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-pizza-slice"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-produtos">0</h3>
+                        <p>Produtos Cadastrados</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-motorcycle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-entregadores">0</h3>
+                        <p>Entregadores</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controles -->
+            <div class="controls">
+                <button class="btn btn-primary" onclick="simularPedidos()">
+                    <i class="fas fa-bolt"></i> Simular Pedidos
+                </button>
+                <button class="btn btn-secondary" onclick="carregarTodosDados()">
+                    <i class="fas fa-sync"></i> Atualizar Dados
+                </button>
+                <button class="btn btn-success" onclick="mostrarFormUsuario()">
+                    <i class="fas fa-user-plus"></i> Novo Usuário
+                </button>
+                <button class="btn btn-info" onclick="mostrarFormProduto()">
+                    <i class="fas fa-plus"></i> Novo Produto
+                </button>
+            </div>
+
+            <!-- Formulários -->
+            <div class="forms-section">
+                <!-- Formulário de Usuário -->
+                <div id="form-usuario" class="form-container" style="display: none;">
+                    <h3><i class="fas fa-user"></i> Cadastrar Novo Usuário</h3>
+                    <form id="usuarioForm">
+                        <div class="form-group">
+                            <label for="nome">Nome:</label>
+                            <input type="text" id="nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefone">Telefone:</label>
+                            <input type="text" id="telefone" name="telefone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endereco">Endereço:</label>
+                            <textarea id="endereco" name="endereco" required></textarea>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="btn btn-success">Cadastrar</button>
+                            <button type="button" class="btn btn-secondary" onclick="fecharFormularios()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Formulário de Produto -->
+                <div id="form-produto" class="form-container" style="display: none;">
+                    <h3><i class="fas fa-pizza-slice"></i> Cadastrar Novo Produto</h3>
+                    <form id="produtoForm">
+                        <div class="form-group">
+                            <label for="produto_nome">Nome do Produto:</label>
+                            <input type="text" id="produto_nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="descricao">Descrição:</label>
+                            <textarea id="descricao" name="descricao" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="preco">Preço (R$):</label>
+                            <input type="number" id="preco" name="preco" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoria">Categoria:</label>
+                            <input type="text" id="categoria" name="categoria" required>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="btn btn-success">Cadastrar</button>
+                            <button type="button" class="btn btn-secondary" onclick="fecharFormularios()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tabelas de Dados -->
+            <div class="tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="abrirTab('pedidos')">Pedidos</button>
+                    <button class="tab-btn" onclick="abrirTab('usuarios')">Usuários</button>
+                    <button class="tab-btn" onclick="abrirTab('produtos')">Produtos</button>
+                    <button class="tab-btn" onclick="abrirTab('entregadores')">Entregadores</button>
+                </div>
+
+                <!-- Tab de Pedidos -->
+                <div id="tab-pedidos" class="tab-content active">
+                    <h3><i class="fas fa-list"></i> Últimos Pedidos</h3>
+                    <div class="table-container">
+                        <table id="tabela-pedidos">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Data</th>
+                                    <th>Itens</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pedidos-body">
+                                <!-- Dados carregados via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab de Usuários -->
+                <div id="tab-usuarios" class="tab-content">
+                    <h3><i class="fas fa-users"></i> Usuários Cadastrados</h3>
+                    <div class="table-container">
+                        <table id="tabela-usuarios">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Endereço</th>
+                                    <th>Data Cadastro</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usuarios-body">
+                                <!-- Dados carregados via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab de Produtos -->
+                <div id="tab-produtos" class="tab-content">
+                    <h3><i class="fas fa-utensils"></i> Cardápio</h3>
+                    <div class="table-container">
+                        <table id="tabela-produtos">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Preço</th>
+                                    <th>Categoria</th>
+                                    <th>Disponível</th>
+                                </tr>
+                            </thead>
+                            <tbody id="produtos-body">
+                                <!-- Dados carregados via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab de Entregadores -->
+                <div id="tab-entregadores" class="tab-content">
+                    <h3><i class="fas fa-motorcycle"></i> Entregadores</h3>
+                    <div class="table-container">
+                        <table id="tabela-entregadores">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>Veículo</th>
+                                    <th>Disponível</th>
+                                </tr>
+                            </thead>
+                            <tbody id="entregadores-body">
+                                <!-- Dados carregados via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Processando...</p>
+        </div>
+
+        <!-- Notificações -->
+        <div id="notifications"></div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
